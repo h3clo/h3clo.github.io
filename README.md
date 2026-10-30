@@ -27,3 +27,20 @@ python3 -m http.server 8000 --directory dist
 ```
 
 http://localhost:8000 에서 확인합니다. Docsify와 폰트는 외부 CDN을 사용하므로 인터넷 연결이 필요합니다. `_sidebar.md`, `_generate_sidebar.sh`는 이전 구성의 기록이며 현재 배포에서는 `scripts/build.py`가 메뉴를 생성합니다.
+
+## 작성일·수정일
+
+현재 기존 글에는 날짜 속성이 없어 Git의 최초 기록을 작성일, 마지막 기록을 수정일로 표시합니다. 파일 이름 변경 이력도 따라갑니다. Git 날짜에는 `Git` 표시가 붙으며, 실제로 글을 처음 쓰거나 편집한 시각과 다를 수 있습니다. Git 기록이 없는 새 파일은 날짜를 임의 생성하지 않습니다.
+
+정확한 날짜를 알고 있다면 Markdown 맨 위에 아래 속성을 넣으세요. 각 날짜는 Git보다 우선하며 자동으로 갱신되지는 않습니다. `date`, `created_at`, `updated_at`, `modified`도 지원합니다.
+
+```yaml
+---
+created: 2024-02-20
+updated: 2026-10-30
+---
+```
+
+## 토이 프로젝트 추가
+
+`assets/projects.js`의 `PROJECTS` 배열에 이름(`name`), 설명(`description`), 소개 문구(`tagline`), 서비스 주소(`url`), 저장소 주소(`repo`, 선택), 아이콘(`icon`, 선택)을 추가하면 `/#/projects` 목록에 표시됩니다.
