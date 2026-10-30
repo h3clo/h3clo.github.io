@@ -1,31 +1,36 @@
-name: Deploy Docsify to GitHub Pages
+name: Deploy notes to GitHub Pages
 
 on:
   push:
-    branches:
-      - main  # main 브랜치에 푸시할 때마다 실행
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
-  contents: write  # GitHub Pages에 쓰기 권한 부여
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4  # 저장소를 가져옴
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          node-version: '18'  # Node.js 최신 버전 사용
-
-      - name: Install Docsify
-        run: npm install -g docsify-cli  # Docsify 설치
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+          python-version: '3.x'
+      - name: Build public notes
+        run: python3 scripts/build.py
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}  # GitHub 자동 배포 토큰
-          publish_dir: ./  # 루트 디렉토리를 GitHub Pages에 배포
+          path: dist
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
