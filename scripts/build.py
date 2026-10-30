@@ -1,6 +1,6 @@
 """Build a public-only Markdown site. Run: python3 scripts/build.py"""
 from pathlib import Path
-import re, json, shutil, unicodedata, subprocess
+import re, json, shutil, unicodedata, subprocess, hashlib
 from datetime import datetime
 from urllib.parse import quote
 ROOT = Path(__file__).resolve().parent.parent
@@ -67,4 +67,11 @@ for p in OUT.rglob('*'):
         rel=p.relative_to(OUT).as_posix()
         for key in [rel,p.name,p.stem]: lookup.setdefault(unicodedata.normalize('NFC',key),rel)
 (OUT / 'assets/lookup.js').write_text('window.NOTE_FILES = '+json.dumps(lookup,ensure_ascii=False)+';')
+# Version assets so a browser cannot mix an old script with a new page after deployment.
+html = (OUT / 'index.html').read_text()
+for asset in (OUT / 'assets').iterdir():
+    if asset.is_file() and asset.suffix in {'.js', '.css'}:
+        version = hashlib.sha256(asset.read_bytes()).hexdigest()[:12]
+        html = html.replace(f'assets/{asset.name}\"', f'assets/{asset.name}?v={version}\"')
+(OUT / 'index.html').write_text(html)
 print(f'Built {len(notes)} public notes in {OUT}')
