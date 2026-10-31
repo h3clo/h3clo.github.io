@@ -75,11 +75,15 @@ for p in OUT.rglob('*'):
         rel=p.relative_to(OUT).as_posix()
         for key in [rel,p.name,p.stem]: lookup.setdefault(unicodedata.normalize('NFC',key),rel)
 (OUT / 'assets/lookup.js').write_text('window.NOTE_FILES = '+json.dumps(lookup,ensure_ascii=False)+';')
-# Version assets so a browser cannot mix an old script with a new page after deployment.
-html = (OUT / 'index.html').read_text()
-for asset in (OUT / 'assets').iterdir():
-    if asset.is_file() and asset.suffix in {'.js', '.css'}:
-        version = hashlib.sha256(asset.read_bytes()).hexdigest()[:12]
-        html = html.replace(f'assets/{asset.name}\"', f'assets/{asset.name}?v={version}\"')
-(OUT / 'index.html').write_text(html)
+# Version assets so a browser cannot mix old scripts with new pages after deployment.
+for html_path, asset_dir, prefix in [
+    (OUT / 'index.html', OUT / 'assets', 'assets'),
+    (OUT / 'life/index.html', OUT / 'life/assets', '/life/assets'),
+]:
+    html = html_path.read_text()
+    for asset in asset_dir.iterdir():
+        if asset.is_file() and asset.suffix in {'.js', '.css'}:
+            version = hashlib.sha256(asset.read_bytes()).hexdigest()[:12]
+            html = html.replace(f'{prefix}/{asset.name}\"', f'{prefix}/{asset.name}?v={version}\"')
+    html_path.write_text(html)
 print(f'Built {len(notes)} public notes in {OUT}')

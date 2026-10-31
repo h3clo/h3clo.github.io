@@ -11,7 +11,7 @@
 <body>
   <header class="life-header">
     <a class="life-brand" href="/life/" aria-label="식탁과 일상 홈"><span class="brand-mark">밥</span><span><strong>식탁과 일상</strong><small>먹고, 살고, 기록하기</small></span></a>
-    <nav aria-label="일상 블로그 메뉴"><a href="/life/">레시피 모아보기</a></nav>
+    <nav aria-label="일상 블로그 메뉴"><a href="/life/">기록 모아보기</a></nav>
   </header>
   <main id="app" class="life-content">페이지를 불러오는 중입니다…</main>
   <footer class="life-footer"><span>만들어 먹고, 좋아하는 하루를 기록합니다.</span><a href="https://h3clo.github.io/#/">개발 기록이 궁금하다면 h3clo 개발 블로그로 👉</a></footer>
@@ -27,16 +27,16 @@
       auto2top: true,
       plugins: [function (hook, vm) {
         hook.beforeEach(function (content) {
-          if (vm.route.path !== '/') return '<p class="life-back"><a href="/life/">← 레시피 모아보기</a></p>' + content;
-          return content;
+          return window.lifeBlog.beforeEach(content, vm.route.path);
         });
         hook.doneEach(function () {
-          const heading = document.querySelector('.markdown-section h1');
-          document.title = (heading ? heading.textContent : '식탁과 일상') + ' · 식탁과 일상';
+          window.lifeBlog.afterRender(vm.route.path);
         });
       }]
     };
   </script>
+  <script src="/life/assets/media.js"></script>
+  <script src="/life/assets/life.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4.13.1/lib/docsify.min.js" onerror="document.getElementById('app').textContent='페이지를 불러오지 못했습니다. 인터넷 연결을 확인한 뒤 다시 열어 주세요.'"></script>
 </body>
 </html>
