@@ -15,7 +15,7 @@
   let category = '전체';
   const categories = ['전체',...new Set(notes.map(n=>n.category))];
   function home() {
-    return `<section class="intro"><p class="eyebrow">A LITTLE MORE, EVERY DAY</p><h1>배운 것을 기록하고,<br>생각한 것을 만듭니다<span>.</span></h1><p>개발하며 만난 질문과 배움, 그리고 작은 프로젝트들.</p></section>
+    return `<section class="intro"><p class="eyebrow">A LITTLE MORE, EVERY DAY</p><h1>배운 것을 기록하고,<br>생각한 것을 만듭니다<span>.</span></h1><p>개발 기록과 일상의 작은 취향을 차곡차곡 모읍니다.</p><p><a href="#/life/">레시피와 일상 기록 둘러보기 ↗</a></p></section>
     <section class="archive" aria-labelledby="archive-title"><div class="archive-head"><h2 id="archive-title">쌓아가는 기록 <small>${notes.length}</small></h2><label class="search"><span class="sr-only">제목과 본문 검색</span><input id="note-search" type="search" placeholder="어떤 기록을 찾고 있나요?" autocomplete="off"></label></div><div class="filters" aria-label="주제 필터">${categories.map(c=>`<button type="button" data-category="${esc(c)}" aria-pressed="${c===category}">${esc(c)}</button>`).join('')}</div><p id="result-count" class="sr-only" role="status"></p><div id="note-list" class="note-grid"></div></section><footer class="home-footer">조금씩 배우고, 오래 남기기.<a href="https://github.com/h3clo/h3clo.github.io">GitHub ↗</a></footer>`;
   }
   const isProjects = path => /^\/projects(?:\.md)?$/.test(path);
@@ -69,7 +69,7 @@
       hook.doneEach(()=>{
         const current = notes.find(n=>n.path.replace(/\.md$/,'').normalize('NFC')===decodeURIComponent(vm.route.path.replace(/^\//,'')).replace(/\.md$/,'').normalize('NFC'));
         document.title=isProjects(vm.route.path) ? '토이 프로젝트 · h3clo' : current ? current.title+' · h3clo' : 'h3clo · 기록과 프로젝트';
-        document.querySelectorAll('.site-header nav a').forEach(a=>{if((a.getAttribute('href')==='#/projects')===isProjects(vm.route.path))a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+        document.querySelectorAll('.site-header nav a').forEach(a=>{const href=a.getAttribute('href');const active=href==='#/projects'?isProjects(vm.route.path):href==='#/life/'?vm.route.path.startsWith('/life'):href==='#/'?vm.route.path==='/':false;if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
         if(document.getElementById('note-list')) {
           filter();
           document.getElementById('note-search').oninput=filter;

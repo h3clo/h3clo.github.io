@@ -36,6 +36,12 @@ for p in sorted(ROOT.rglob('*.md')):
     if any(x.startswith('.') or x in {'dist','node_modules','scripts'} for x in rel.parts) or p.name in {'README.md','_sidebar.md','AGENTS.md'}: continue
     text = p.read_text()
     if re.match(r'^---\s*\n[\s\S]*?\bdraft:\s*true\b[\s\S]*?\n---', text, re.I): continue
+    if rel.parts[0] == 'life':
+        # Life posts are published at their own gallery and stay out of the developer archive.
+        dest = OUT / rel
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(re.sub(r'^---\s*\n[\s\S]*?\n---\s*\n', '', text))
+        continue
     dates = note_dates(rel.as_posix(), text)
     text = re.sub(r'^---\s*\n[\s\S]*?\n---\s*\n', '', text)
     dest = OUT / rel
@@ -49,13 +55,15 @@ for p in sorted(ROOT.rglob('*.md')):
     notes.append(dict(**dates, path=rel.as_posix(), title=p.stem, category={'Github Blog':'블로그 만들기','GitHub Blog와 Obsidian과 연동하기':'블로그 만들기','SQLD':'SQLD','자격증-SQLD':'SQLD','자격증 - 정보처리기사 (필기)':'정보처리기사','자격증-경영정보시각화능력':'경영정보시각화능력','프로젝트 끝날 때까지 개념 완벽히 이해할 것':'개발 개념'}.get(rel.parts[0],rel.parts[0]) if len(rel.parts)>1 else '학습 메모', excerpt=clean[:130], search=clean, minutes=max(1,round(len(text)/650))))
 for folder in ['assets','img']:
     shutil.copytree(ROOT / folder, OUT / folder, dirs_exist_ok=True)
+if (ROOT / 'life').exists():
+    shutil.copytree(ROOT / 'life', OUT / 'life', dirs_exist_ok=True)
 for p in ROOT.glob('*.png'): shutil.copy2(p, OUT / p.name)
 shutil.copy2(ROOT / 'index.html', OUT / 'index.html')
 (OUT / 'README.md').write_text('<!-- home -->')
 (OUT / 'projects.md').write_text('<!-- projects -->')
 (OUT / '.nojekyll').touch()
 (OUT / 'assets/notes.js').write_text('window.NOTES = '+json.dumps(notes,ensure_ascii=False)+';')
-lines=['- [전체 기록](#/)','- [토이 프로젝트](/projects.md)','']
+lines=['- [전체 기록](#/)','- [토이 프로젝트](/projects.md)','- [일상과 레시피](/life/README.md)','']
 for category in dict.fromkeys(n['category'] for n in notes):
     lines += ['- **'+category+'**']
     lines += ['  - ['+n['title']+'](/'+quote(n['path'])+')' for n in notes if n['category']==category]
