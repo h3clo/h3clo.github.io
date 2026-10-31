@@ -16,7 +16,8 @@ a:focus-visible{outline:3px solid var(--berry);outline-offset:4px;border-radius:
 .life-header nav a{color:var(--ink)}
 .life-content{max-width:1160px;min-height:calc(100vh - 185px);margin:0 auto;padding:45px 6% 80px}
 #app .sidebar,#app .sidebar-nav,#app .sidebar-toggle,body>.sidebar-toggle,.sidebar{display:none!important;visibility:hidden!important}
-.content{margin-left:0!important;padding:0!important;background:transparent!important}
+html body .sidebar-toggle{display:none!important;visibility:hidden!important}
+.content{width:100%!important;max-width:1280px!important;margin:0 auto!important;padding:45px max(6%,calc((100vw - 1160px)/2)) 80px!important;background:transparent!important}
 .markdown-section{max-width:none;margin:0 auto;font-size:var(--reading-size);overflow-wrap:anywhere}
 .markdown-section>h1:first-child{font-size:clamp(30px,4vw,48px);line-height:1.35;letter-spacing:-1.8px;margin:28px 0 12px}
 .markdown-section h2{font-size:22px;letter-spacing:-.6px;margin:54px 0 16px}
