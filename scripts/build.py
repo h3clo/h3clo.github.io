@@ -63,7 +63,7 @@ shutil.copy2(ROOT / 'index.html', OUT / 'index.html')
 (OUT / 'projects.md').write_text('<!-- projects -->')
 (OUT / '.nojekyll').touch()
 (OUT / 'assets/notes.js').write_text('window.NOTES = '+json.dumps(notes,ensure_ascii=False)+';')
-lines=['- [전체 기록](#/)','- [토이 프로젝트](/projects.md)','- [일상과 레시피](/life/README.md)','']
+lines=['- [전체 기록](#/)','- [토이 프로젝트](/projects.md)','- [일상 블로그](/life/)','']
 for category in dict.fromkeys(n['category'] for n in notes):
     lines += ['- **'+category+'**']
     lines += ['  - ['+n['title']+'](/'+quote(n['path'])+')' for n in notes if n['category']==category]
